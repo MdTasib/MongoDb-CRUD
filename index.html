@@ -25,9 +25,10 @@
                 .then(res => res.json())
                 .then(products => {
                     const container = document.getElementById('products');
+                    container.innerHTML = '';
                     products.forEach(product => {
                         const p = document.createElement('p');
-                        p.innerHTML = `Name : ${product.name} - Price : ${product.price} - Quantity : ${product.quantity} <button onclick="updateProduct('${product._id}')">Update</button> <button onclick="deleteProduct('${product._id}')">Delete</button>`
+                        p.innerHTML = `Name : ${product.name} - Price : ${product.price} - Quantity : ${product.quantity} <button onclick="updateProduct('${product._id}')">Update</button> <button onclick="deleteProduct(event,'${product._id}')">Delete</button>`
                         container.appendChild(p);
                     })
                 })
@@ -39,23 +40,43 @@
                 .then(res => res.json())
                 .then(data => {
                     const updateContainer = document.getElementById('update');
-                    updateContainer.innerHTML = `<h3>Update Product : ${data._id}</h3>
+                    updateContainer.innerHTML = `
                     Price : <input type='text' id='price' value='${data.price}'/><br/>
                     Quantity : <input type='text' id='quantity' value='${data.quantity}'/><br/>
-                    <button>Update Product</button>
+                    <button onclick="update('${data._id}')">Update Product</button>
                     `
+                })
+        }
+
+        function update(id) {
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
+            const product = { id, price, quantity };
+            fetch(`/update/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product),
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result) {
+                        loadProduct();
+                        document.getElementById('update').innerHTML = '';
+                    }
                 })
         }
 
 
         // delete product
-        function deleteProduct(id) {
+        function deleteProduct(event, id) {
             fetch(`/delete/${id}`, {
                 method: 'DELETE',
             })
                 .then(res => res.json())
                 .then(result => {
-                    console.log('Delete Successfully');
+                    if (result) {
+                        event.target.parentNode.style.display = 'none';
+                    }
                 })
         }
         loadProduct();

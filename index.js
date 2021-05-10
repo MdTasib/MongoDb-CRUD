@@ -26,7 +26,7 @@ client.connect(err => {
         collection.insertOne(product)
             .then(result => {
                 console.log('data added successfully');
-                res.send('Success');
+                res.redirect('/');
             })
     });
 
@@ -46,11 +46,20 @@ client.connect(err => {
             })
     })
 
+    app.patch('/update/:id', (req, res) => {
+        collection.updateOne({ _id: ObjectId(req.params.id) }, {
+            $set: { price: req.body.price, quantity: req.body.quantity }
+        })
+            .then(result => {
+                res.send(result.modifiedCount > 0);
+            })
+    })
+
     // delete
     app.delete('/delete/:id', (req, res) => {
         collection.deleteOne({ _id: ObjectId(req.params.id) })
             .then(result => {
-                console.log(result);
+                res.send(result.deletedCount > 0);
             })
     });
 });
