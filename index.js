@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 
 const uri = "mongodb+srv://firstCrud:12345ohidul@cluster0.past8.mongodb.net/firstCrud?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -36,6 +37,14 @@ client.connect(err => {
                 res.send(documents);
             })
     });
+
+    // delete
+    app.delete('/delete/:id', (req, res) => {
+        collection.deleteOne({ _id: ObjectId(req.params.id) })
+            .then(result => {
+                console.log(result);
+            })
+    })
 });
 
 app.listen(3000);
