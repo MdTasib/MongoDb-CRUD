@@ -16,6 +16,7 @@
         <button type="submit">Add Product</button>
     </form>
     <div id="products"></div>
+    <div id="update"></div>
 
 
     <script>
@@ -23,16 +24,31 @@
             fetch('/products')
                 .then(res => res.json())
                 .then(products => {
-                    console.log(products);
                     const container = document.getElementById('products');
                     products.forEach(product => {
                         const p = document.createElement('p');
-                        p.innerHTML = `Name : ${product.name} - Price : ${product.price} - Quantity : ${product.quantity} <button onclick="deleteProduct('${product._id}')">Delete</button>`
+                        p.innerHTML = `Name : ${product.name} - Price : ${product.price} - Quantity : ${product.quantity} <button onclick="updateProduct('${product._id}')">Update</button> <button onclick="deleteProduct('${product._id}')">Delete</button>`
                         container.appendChild(p);
                     })
                 })
         }
 
+        // update product
+        function updateProduct(id) {
+            fetch(`/product/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    const updateContainer = document.getElementById('update');
+                    updateContainer.innerHTML = `<h3>Update Product : ${data._id}</h3>
+                    Price : <input type='text' id='price' value='${data.price}'/><br/>
+                    Quantity : <input type='text' id='quantity' value='${data.quantity}'/><br/>
+                    <button>Update Product</button>
+                    `
+                })
+        }
+
+
+        // delete product
         function deleteProduct(id) {
             fetch(`/delete/${id}`, {
                 method: 'DELETE',

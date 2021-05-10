@@ -38,13 +38,21 @@ client.connect(err => {
             })
     });
 
+    // update
+    app.get('/product/:id', (req, res) => {
+        collection.find({ _id: ObjectId(req.params.id) })
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+
     // delete
     app.delete('/delete/:id', (req, res) => {
         collection.deleteOne({ _id: ObjectId(req.params.id) })
             .then(result => {
                 console.log(result);
             })
-    })
+    });
 });
 
 app.listen(3000);
