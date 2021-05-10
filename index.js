@@ -25,7 +25,6 @@ client.connect(err => {
         const product = req.body;
         collection.insertOne(product)
             .then(result => {
-                console.log('data added successfully');
                 res.redirect('/');
             })
     });
